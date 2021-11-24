@@ -1,0 +1,23 @@
+{
+    "name": "dek-cz/mssql-profiler-bundle",
+    "type": "symfony-bundle",
+    "description": "adding mssql procedure panel to profiler",
+    "keywords": ["php", "symfony", "reusable bundle", "mssql"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "jzdek",
+            "email": "jan.zaruba@dek-cz.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Dekcz\\MssqlProfiler\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DekczTests\\": "tests/"
+        }
+    }
+}
