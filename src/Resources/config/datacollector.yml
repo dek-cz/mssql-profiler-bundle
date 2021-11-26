@@ -1,0 +1,16 @@
+parameters:
+    dekcz.mssql_profiler.mssql_collector.class: Dekcz\MssqlProfiler\DataCollector\MssqlCollector
+    
+services:
+        dekcz.mssql_profiler.mssql_collector:
+            class: %dekcz.mssql_profiler.mssql_collector.class%
+            tags:
+                -
+                    name: mssql_collector
+    #                 must match the value returned by the getName() method
+                    id: 'mssql'
+    #                 optional template (it has more priority than the value returned by getTemplate())
+#                    template: 'mssql_collector/template.html.twig'
+                    template: "MssqlProfilerBundle:Collector:mssql"
+    #                 optional priority (positive or negative integer; default = 0)
+    #                 priority: 300
