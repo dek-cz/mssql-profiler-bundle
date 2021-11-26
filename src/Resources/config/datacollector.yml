@@ -1,9 +1,7 @@
-parameters:
-    dekcz.mssql_profiler.mssql_collector.class: Dekcz\MssqlProfiler\DataCollector\MssqlCollector
-    
 services:
-        dekcz.mssql_profiler.mssql_collector:
-            class: "%dekcz.mssql_profiler.mssql_collector.class%"
+
+        Dekcz\MssqlProfiler\DataCollector\MssqlCollector:
+            autoconfigure: true
             tags:
                 -
                     name: mssql_collector
@@ -11,6 +9,6 @@ services:
                     id: 'mssql'
     #                 optional template (it has more priority than the value returned by getTemplate())
 #                    template: 'mssql_collector/template.html.twig'
-                    template: "MssqlProfilerBundle:Collector:mssql"
+                    template: "@MssqlProfiler/Collector/mssql.html.twig"
     #                 optional priority (positive or negative integer; default = 0)
     #                 priority: 300

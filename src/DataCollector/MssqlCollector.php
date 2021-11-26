@@ -95,7 +95,8 @@ class MssqlCollector extends AbstractDataCollector
 
     public static function getTemplate(): ?string
     {
-        return 'mssql_collector/template.html.twig';
+//        var_dump(__DIR__ . '/../Resources/views/Collector/mssql.html.twig');exit;
+        return "@MssqlProfiler/Collector/mssql.html.twig";
     }
 
     public function getDump(): array

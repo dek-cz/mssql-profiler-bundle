@@ -4,7 +4,7 @@
 {% block toolbar %}
     {% set icon %}
         {# this is the content displayed as a panel in the toolbar #}
-        {{ include('bundles/mssql-profiler-bundle/images/profiler/database.svg') }}
+        {{ include('@MssqlProfiler/images/profiler/database.svg') }}
         <span class="sf-toolbar-value"> {{ collector.getCountConn }} in {{ collector.getTime }}ms</span>
     {% endset %}
 
