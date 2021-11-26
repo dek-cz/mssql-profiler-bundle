@@ -17,7 +17,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder('mssql_collector');
+        $treeBuilder = new TreeBuilder('mssql_profiler');
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
