@@ -3,7 +3,7 @@ parameters:
     
 services:
         dekcz.mssql_profiler.mssql_collector:
-            class: %dekcz.mssql_profiler.mssql_collector.class%
+            class: "%dekcz.mssql_profiler.mssql_collector.class%"
             tags:
                 -
                     name: mssql_collector
