@@ -12,11 +12,17 @@ class MssqlCollector extends AbstractDataCollector
 
     public function __construct()
     {
+        $this->data['mssql_queries'] = [];
+        $this->data['mssql_exec_time'] = [];
+        $this->registerMssqlEvents();
+    }
+
+    public function registerMssqlEvents()
+    {
         $that = $this;
-        $that->data['mssql_queries'] = [];
-        $that->data['mssql_exec_time'] = [];
         SQLEvent::instance()->bind(SQLEvent::ON_AFTER_PROC_EXECUTE, function ($connection, $stmt, $key, $procname, $executionTime) use ($that)
         {
+            // inherited mojo
             $exeTime = (float) number_format($executionTime * 1000, 3, '.', '');
             $out = $connection->getOutputs();
             foreach ($out as $o) {
@@ -90,7 +96,7 @@ class MssqlCollector extends AbstractDataCollector
 
     public function collect(Request $request, Response $response, \Throwable $exception = null)
     {
-        
+//        see mssql events
     }
 
     public static function getTemplate(): ?string
