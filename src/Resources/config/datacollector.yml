@@ -2,6 +2,7 @@ services:
 
         Dekcz\MssqlProfiler\DataCollector\MssqlCollector:
             autoconfigure: true
+            public: true
             tags:
                 -
                     name: mssql_collector

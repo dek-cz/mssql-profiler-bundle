@@ -24,6 +24,16 @@
         "symfony/config": "^5.3",
         "symfony/dependency-injection": "^5.3"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "phpstan/phpstan": "^0.12.69",
+        "phpstan/phpstan-nette": "^0.12.14",
+        "spaze/phpstan-disallowed-calls": "^1.1",
+        "phpunit/php-code-coverage": "^9.2",
+        "php-coveralls/php-coveralls": "^2.4",
+        "ninjify/qa": "^0.12.1",
+        "phpstan/phpstan-strict-rules": "^0.12.9"
+    },
     "autoload": {
         "psr-4": {
             "Dekcz\\MssqlProfiler\\": "src/"
@@ -33,5 +43,28 @@
         "psr-4": {
             "DekczTests\\": "tests/"
         }
+    },
+    "scripts": {
+        "qa": [
+            "linter src",
+            "codesniffer src"
+        ],
+        "ci": [
+            "@qa",
+            "@phpstan",
+            "@coverage"
+        ],
+        "phpunit": [
+            "phpunit tests --colors=always"
+        ],
+        "coverage": [
+            "phpunit tests --colors=always --coverage-clover=coverage.xml"
+        ],
+        "phpstan": [
+            "php -d memory_limit=-1 vendor/phpstan/phpstan/phpstan.phar analyse -l max -c phpstan.neon.dist src"
+        ],
+        "cfixer": [
+            "codefixer src tests"
+        ]
     }
 }

@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Dekcz\MssqlProfiler\DataCollector;
 
+use DateTimeInterface;
+use DekApps\MssqlProcedure\Event\Event as SQLEvent;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\DataCollector\AbstractDataCollector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use DekApps\MssqlProcedure\Event\Event as SQLEvent;
+use Throwable;
 
 class MssqlCollector extends AbstractDataCollector
 {
@@ -17,40 +22,39 @@ class MssqlCollector extends AbstractDataCollector
         $this->registerMssqlEvents();
     }
 
-    public function registerMssqlEvents()
+    public function registerMssqlEvents(): void
     {
         $that = $this;
-        SQLEvent::instance()->bind(SQLEvent::ON_AFTER_PROC_EXECUTE, function ($connection, $stmt, $key, $procname, $executionTime) use ($that)
-        {
+        SQLEvent::instance()->bind(SQLEvent::ON_AFTER_PROC_EXECUTE, function ($connection, $stmt, $key, $procname, $executionTime) use ($that) {
             // inherited mojo
             $exeTime = (float) number_format($executionTime * 1000, 3, '.', '');
             $out = $connection->getOutputs();
             foreach ($out as $o) {
-                switch ($o['var_type'])
-                {
-                    case SQLSRV_SQLTYPE_INT :
+                switch ($o['var_type']) {
+                    case SQLSRV_SQLTYPE_INT:
                         $o['var_name'] = 'int';
                         break;
-                    case SQLSRV_SQLTYPE_VARCHAR :
+                    case SQLSRV_SQLTYPE_VARCHAR:
                         $o['var_name'] = 'varchar(max)';
                         break;
-                    case SQLSRV_SQLTYPE_FLOAT :
+                    case SQLSRV_SQLTYPE_FLOAT:
                         $o['var_name'] = 'float';
                         break;
-                    default;
+                    default:
                         $o['var_name'] = 'other';
                         break;
                 }
             }
-            $conn = array(
+
+            $conn = [
                 'DB' => $connection->getDbName(),
                 'NAME' => $connection->getName(),
                 'IN' => $connection->getInputsConfig(),
                 'OUT' => $out,
                 'TIME' => $exeTime,
                 'RESULT' => sqlsrv_num_rows($stmt),
-                'ENUM_PARAM_OUT' => SQLSRV_PARAM_OUT
-            );
+                'ENUM_PARAM_OUT' => SQLSRV_PARAM_OUT,
+            ];
 
             if (!preg_match('/^\[[a-zA-Z0-9_]+\]\./', $conn['NAME'])) {
                 $conn['NAME'] = preg_replace('/^([a-zA-Z0-9_]+)\./', '[$1].', $conn['NAME']);
@@ -60,9 +64,9 @@ class MssqlCollector extends AbstractDataCollector
                 $in['php_type'] = gettype($in['var']);
                 if (is_string($in['var'])) {
                     $in['var'] = 'N\'' . $in['var'] . '\'';
-                } elseif ($in['var'] instanceof \DateTimeInterface) {
-                    $in['var'] = $in['var']->format(\DateTimeInterface::ISO8601);
-                } elseif (is_null($in['var'])) {
+                } elseif ($in['var'] instanceof DateTimeInterface) {
+                    $in['var'] = $in['var']->format(DateTimeInterface::ISO8601);
+                } elseif ($in['var'] === null) {
                     $in['var'] = 'NULL';
                 }
 
@@ -88,23 +92,25 @@ class MssqlCollector extends AbstractDataCollector
             $that->data['mssql_queries'][] = $conn;
             $that->data['mssql_exec_time'][] = $exeTime;
         });
-        SQLEvent::instance()->bind(SQLEvent::ON_ERROR_PROC_EXECUTE, function ($conn, $error) use ($that)
-        {
-            throw new \Exception($error[0]['message'], $error[0]['code']);
+        SQLEvent::instance()->bind(SQLEvent::ON_ERROR_PROC_EXECUTE, function ($conn, $error) {
+            //@todo: errors
+            throw new Exception($error[0]['message'], $error[0]['code']);
         });
     }
 
-    public function collect(Request $request, Response $response, \Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?Throwable $exception = null): void
     {
 //        see mssql events
     }
 
     public static function getTemplate(): ?string
     {
-//        var_dump(__DIR__ . '/../Resources/views/Collector/mssql.html.twig');exit;
-        return "@MssqlProfiler/Collector/mssql.html.twig";
+        return '@MssqlProfiler/Collector/mssql.html.twig';
     }
 
+    /**
+     * @return array<int, array>
+     */
     public function getDump(): array
     {
         return $this->data['mssql_queries'];

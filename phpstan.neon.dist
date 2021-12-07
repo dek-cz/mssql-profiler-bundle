@@ -1,0 +1,45 @@
+includes:
+  - vendor/phpstan/phpstan-nette/extension.neon
+  - vendor/phpstan/phpstan-nette/rules.neon
+  - vendor/spaze/phpstan-disallowed-calls/extension.neon
+  - vendor/spaze/phpstan-disallowed-calls/disallowed-dangerous-calls.neon
+  - vendor/spaze/phpstan-disallowed-calls/disallowed-execution-calls.neon
+parameters:
+    excludes_analyse:
+        #- %rootDir%/../../../src/**/Generated/*.php
+    ignoreErrors:
+        #- '#Using $this outside a class#'
+
+        # The DependencyInjection returns are very complex to deal with
+        -
+                message: '#.*NodeDefinition::children.*#'
+                path: ./src/DependencyInjection
+
+    disallowedMethodCalls:
+#        -
+#            method: 'PotentiallyDangerous\Logger::log()'
+#            message: 'use our own logger instead'
+#        -
+#            method: 'Redis::connect()'
+#            message: 'use our own Redis instead'
+
+    disallowedStaticCalls:
+#        -
+#            method: 'PotentiallyDangerous\Debugger::log()'
+#            message: 'use our own logger instead'
+
+    disallowedFunctionCalls:
+        -
+            function: 'var_dump()'
+            message: 'use logger instead'
+        -
+            function: 'print_r()'
+            message: 'use logger instead'
+
+    disallowedConstants:
+        -
+            constant: 'DATE_ISO8601'
+            message: 'use DATE_ATOM instead'
+        -
+            constant: 'DateTimeInterface::ISO8601'
+            message: 'use DateTimeInterface::ATOM instead'

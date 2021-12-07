@@ -1,3 +1,5 @@
 ## YAML Template.
 services:
 
+        Dekcz\MssqlProfiler\DataCollector\MssqlCollector:
+            autoconfigure: true
