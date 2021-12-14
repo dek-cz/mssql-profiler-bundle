@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Reference;
+use Dekcz\MssqlProfiler\DataCollector\MssqlCollector;
 
 /**
  * This is the class that loads and manages the bundle configuration
@@ -42,7 +43,7 @@ class MssqlProfilerExtension extends Extension implements PrependExtensionInterf
             $loader->load('datacollector.yml');
             if ($config['client_definition'] !== null) {
                 $parentDef = $this->globContainer->getDefinition($config['client_definition']);
-                $parentDef->addMethodCall('setMssqlCollector', ['@mssql_collector']);
+                $parentDef->addMethodCall('setMssqlCollector', [new Reference('Dekcz\MssqlProfiler\DataCollector\MssqlCollector')]);
             }
         }
     }
