@@ -3,3 +3,4 @@ services:
 
         Dekcz\MssqlProfiler\DataCollector\MssqlCollector:
             autoconfigure: true
+            autowire: true

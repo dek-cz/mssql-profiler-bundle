@@ -2,14 +2,17 @@ services:
 
         Dekcz\MssqlProfiler\DataCollector\MssqlCollector:
             autoconfigure: true
+            autowire: true
             public: true
+            calls:
+                - registerMssqlEvents: []
             tags:
                 -
                     name: mssql_collector
     #                 must match the value returned by the getName() method
-                    id: 'mssql'
+                    id: 'mssql_collector'
     #                 optional template (it has more priority than the value returned by getTemplate())
-#                    template: 'mssql_collector/template.html.twig'
+    #               template: 'mssql_collector/template.html.twig'
                     template: "@MssqlProfiler/Collector/mssql.html.twig"
     #                 optional priority (positive or negative integer; default = 0)
     #                 priority: 300

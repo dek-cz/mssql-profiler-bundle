@@ -19,7 +19,6 @@ class MssqlCollector extends AbstractDataCollector
     {
         $this->data['mssql_queries'] = [];
         $this->data['mssql_exec_time'] = [];
-        $this->registerMssqlEvents();
     }
 
     public function registerMssqlEvents(): void

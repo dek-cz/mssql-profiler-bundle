@@ -27,7 +27,12 @@ class Configuration implements ConfigurationInterface
             ->defaultFalse()
             ->end()
             ->end();
-
+        $rootNode
+            ->children()
+            ->scalarNode('client_definition')
+            ->defaultNull()
+            ->end()
+            ->end();
         return $treeBuilder;
     }
 
