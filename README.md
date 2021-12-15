@@ -36,6 +36,9 @@ class MyMssqlConnector implements MssqlCollectorInterface
 }
 ```
 Toolbar
+
 ![Alt text](src/Resources/public/preview1.jpg?raw=true "Toolbar")
+
 Profiler
+
 ![Alt text](src/Resources/public/preview2.jpg?raw=true "Profiler")
