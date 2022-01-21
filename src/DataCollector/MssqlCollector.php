@@ -91,10 +91,10 @@ class MssqlCollector extends AbstractDataCollector
             $that->data['mssql_queries'][] = $conn;
             $that->data['mssql_exec_time'][] = $exeTime;
         });
-        SQLEvent::instance()->bind(SQLEvent::ON_ERROR_PROC_EXECUTE, function ($conn, $error) {
-            //@todo: errors
-            throw new Exception($error[0]['message'], $error[0]['code']);
-        });
+//        SQLEvent::instance()->bind(SQLEvent::ON_ERROR_PROC_EXECUTE, function ($conn, $error) {
+//            //@todo: errors
+//            throw new Exception($error[0]['message'], $error[0]['code']);
+//        });
     }
 
     public function collect(Request $request, Response $response, ?Throwable $exception = null): void
