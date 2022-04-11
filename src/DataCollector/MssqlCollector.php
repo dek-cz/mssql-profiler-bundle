@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types = 1);
 
 namespace Dekcz\MssqlProfiler\DataCollector;
@@ -28,28 +27,12 @@ class MssqlCollector extends AbstractDataCollector
             // inherited mojo
             $exeTime = (float) number_format($executionTime * 1000, 3, '.', '');
             $out = $connection->getOutputs();
-            foreach ($out as $o) {
-                switch ($o['var_type']) {
-                    case SQLSRV_SQLTYPE_INT:
-                        $o['var_name'] = 'int';
-                        break;
-                    case SQLSRV_SQLTYPE_VARCHAR:
-                        $o['var_name'] = 'varchar(max)';
-                        break;
-                    case SQLSRV_SQLTYPE_FLOAT:
-                        $o['var_name'] = 'float';
-                        break;
-                    default:
-                        $o['var_name'] = 'other';
-                        break;
-                }
-            }
 
             $conn = [
                 'DB' => $connection->getDbName(),
                 'NAME' => $connection->getName(),
                 'IN' => $connection->getInputsConfig(),
-                'OUT' => $out,
+                'OUT' => [],
                 'TIME' => $exeTime,
                 'RESULT' => sqlsrv_num_rows($stmt),
                 'ENUM_PARAM_OUT' => SQLSRV_PARAM_OUT,
@@ -68,26 +51,34 @@ class MssqlCollector extends AbstractDataCollector
                 } elseif ($in['var'] === null) {
                     $in['var'] = 'NULL';
                 }
-
                 if ($in['type'] === SQLSRV_PARAM_OUT) {
                     $conn['OUT'][$in['var_name']] = [
-                        'value' => $conn['OUT'][$in['var_name']],
+                        'value' => $out[$in['var_name']],
                         'param_name' => $in['param_name'],
                         'var_name' => $in['var_name'],
                         'var_type' => $in['var'],
+                        'php_type' => gettype($out[$in['var_name']]),
                     ];
                 }
             }
 
-            $output = [];
-            foreach ($conn['OUT'] as $key => &$out) {
-                if (is_string($out)) {
-                    $out = htmlspecialchars($out);
+            foreach ($conn['OUT'] as $k => &$o) {
+                switch ($o['var_type'])
+                {
+                    case SQLSRV_SQLTYPE_INT:
+                        $o['var_name_text'] = 'int';
+                        break;
+                    case SQLSRV_SQLTYPE_VARCHAR:
+                        $o['var_name_text'] = 'varchar(max)';
+                        break;
+                    case SQLSRV_SQLTYPE_FLOAT:
+                        $o['var_name_text'] = 'float';
+                        break;
+                    default:
+                        $o['var_name_text'] = 'other';
+                        break;
                 }
-
-                $output[] = $key . ': <em>(' . gettype($out['value']) . ')</em> ' . $out['value'];
             }
-
             $that->data['mssql_queries'][] = $conn;
             $that->data['mssql_exec_time'][] = $exeTime;
         });

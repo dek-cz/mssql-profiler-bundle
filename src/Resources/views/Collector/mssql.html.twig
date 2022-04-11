@@ -55,20 +55,28 @@
             <tr>
                 <td>{{ query['TIME'] }}</td>
                 <td>
-<pre><span class="command">USE</span> [{{ query['DB'] }}]
-<span class="command">EXEC</span>{{ query['NAME'] }}
+<pre>
+<span class="command">USE</span> [{{ query['DB'] }}]
+{% for outp in query['OUT'] %}
+{% if loop.first %}
+DECLARE
+{% endif %}
+ @{{ outp['var_name'] }} <span>{{ outp['var_name_text'] }}{% if not loop.last %},{% endif %}</span>
+{% endfor %}
+
+<span class="command">EXEC</span> {{ query['NAME'] }}
 {% for inp in query['IN'] %}
 {% if inp['type'] != query['ENUM_PARAM_OUT'] %}
 {{ inp['param_name'] }} = <span class="{{ inp['php_type']|lower }}"> {{ inp['var'] }} {% if not loop.last %},{% endif %}</span> 
 {% else %}
-{{ inp['param_name'] }} = @{{ inp['var_name'] }} output{% if not loop.last %},{% endif %}
+{{ inp['param_name'] }} = <span>@{{ inp['var_name'] }} OUTPUT{% if not loop.last %},{% endif %}</span>
 {% endif %}
 {% endfor %}
 {% for outp in query['OUT'] %}
-{% if not loop.first %}
-select
+{% if loop.first %}
+<span class="command">SELECT</span>
 {% endif %}
- @{{ outp['var_name'] }}{% if not loop.last %},{% endif %}
+ @{{ outp['var_name'] }} AS <span>N'@{{ outp['var_name'] }}' {% if not loop.last %},{% endif %}</span>
 {% endfor %}
 
 <a href="#" onclick="copyTextToClipboard(getQuery(this));return false;">Zkopírovat query do schránky</a>
